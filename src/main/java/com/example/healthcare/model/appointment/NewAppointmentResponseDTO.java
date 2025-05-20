@@ -8,8 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class NewAppointmentResponseDTO {
 
-    @NotNull
-    private boolean success;
+
     @NotNull
     private LocalDateTime dateAndTime;
     @NotNull
@@ -18,5 +17,7 @@ public class NewAppointmentResponseDTO {
     private String doctorName;
     @NotNull
     private String patientName;
+    @NotNull
+    private String status;
 
 }

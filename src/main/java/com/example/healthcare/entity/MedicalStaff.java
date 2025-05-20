@@ -19,7 +19,8 @@ public class MedicalStaff extends User{
     private String specialty;
     @Column(unique = true)
     private String licenseNumber;
-    private String Department;
+    @Enumerated(EnumType.STRING)
+    private MedicalDepartment Department;
     @Enumerated(EnumType.STRING)
     private User.UserRoles role;
     private Boolean active;
@@ -29,7 +30,18 @@ public class MedicalStaff extends User{
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "medicalStaff", cascade = CascadeType.MERGE)
     private List<Appointment> appointments;
 
-
+    public enum MedicalDepartment {
+        GENERAL_PRACTICE,
+        PEDIATRICS,
+        CARDIOLOGY,
+        DERMATOLOGY,
+        ORTHOPEDICS,
+        OBSTETRICS_GYNECOLOGY,
+        INTERNAL_MEDICINE,
+        EMERGENCY_MEDICINE,
+        RADIOLOGY,
+        NEUROLOGY
+    }
 }
 
 
