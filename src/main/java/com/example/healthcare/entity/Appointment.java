@@ -36,7 +36,7 @@ public class Appointment {
     private List<Prescription> prescriptions;
     @OneToOne
     private Billing billing;
-    enum AppointmentStatus {
+    public enum AppointmentStatus {
         REQUESTED,
         CONFIRMED,
         COMPLETED,

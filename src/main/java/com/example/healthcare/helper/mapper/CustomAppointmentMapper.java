@@ -1,0 +1,19 @@
+package com.example.healthcare.helper.mapper;
+
+import com.example.healthcare.entity.Appointment;
+import com.example.healthcare.model.appointment.NewAppointmentResponseDTO;
+
+public class CustomAppointmentMapper {
+
+    public static NewAppointmentResponseDTO toNewAppointmentResponseDTO(Appointment appointment) {
+        NewAppointmentResponseDTO response = new NewAppointmentResponseDTO();
+        response.setDateAndTime(appointment.getAppointmentDateAndTime());
+        response.setDoctorName(appointment.getMedicalStaff().getFirstName() + " " + appointment.getMedicalStaff().getLastName());
+        response.setDepartment(appointment.getMedicalStaff().getDepartment().name());
+        response.setPatientName(appointment.getPatient().getFirstName() + " " + appointment.getPatient().getLastName());
+        response.setStatus(appointment.getAppointmentStatus().name());
+        return response;
+    }
+
+
+}
