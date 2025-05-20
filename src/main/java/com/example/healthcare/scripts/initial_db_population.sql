@@ -1,7 +1,7 @@
 USE healthcare;
 
 -- Insert into patient table with all fields (including those inherited from User)
-INSERT INTO patient (id, first_name, last_name, birth_date, gender, address, city, country, zip_code, phone_number, email, password,
+REPLACE INTO patient (id, first_name, last_name, birth_date, gender, address, city, country, zip_code, phone_number, email, password,
                      insurance_provider, role, insurance_policy_number, emergency_contact_name, emergency_contact_phone)
 VALUES
     (1, 'John', 'Smith', '1985-06-12', 'M', '123 Main St', 'Boston', 'USA', '02115', '555-123-4567', 'john.smith@example.com', 'password123',
@@ -15,7 +15,7 @@ VALUES
 
 
 -- Insert into staff table with all fields (including those inherited from User)
-INSERT INTO staff (id, first_name, last_name, birth_date, gender, address, city, country, zip_code, phone_number, email, password,
+REPLACE INTO staff (id, first_name, last_name, birth_date, gender, address, city, country, zip_code, phone_number, email, password,
                    specialty, license_number, department, role, active)
 VALUES
     (1, 'David', 'Williams', '1975-08-15', 'M', '234 Cedar Dr', 'New York', 'USA', '10001', '555-222-3333', 'david.williams@example.com', 'doctor123',
