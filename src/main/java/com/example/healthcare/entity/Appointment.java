@@ -16,6 +16,7 @@ public class Appointment {
     private Long id;
     private LocalDateTime appointmentDateAndTime;
     private String appointmentNotes;
+    @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus;
     private LocalDate createdAt;
     private LocalDate lastUpdated;
