@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/patient")
@@ -20,12 +21,12 @@ public class PatientController {
     private final AppointmentServiceImpl appointmentService;
 
     @PostMapping("/register")
-    public ResponseEntity<SuccessfulRegisterDTO> registerUser(RegisterUserRequestDTO registerUserRequestDTO) {
+    public ResponseEntity<SuccessfulRegisterDTO> registerUser(@RequestBody RegisterUserRequestDTO registerUserRequestDTO) {
         return new ResponseEntity<>(patientService.registerPatient(registerUserRequestDTO), HttpStatus.CREATED);
     }
 
     @PostMapping("/newappointment")
-    public ResponseEntity<NewAppointmentResponseDTO> createNewAppointment(NewAppointmentRequestDTO newAppointmentRequestDTO) {
+    public ResponseEntity<NewAppointmentResponseDTO> createNewAppointment(@RequestBody NewAppointmentRequestDTO newAppointmentRequestDTO) {
         return new ResponseEntity<>(appointmentService.createNewAppointment(newAppointmentRequestDTO), HttpStatus.CREATED);
     }
 
