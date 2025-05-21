@@ -1,0 +1,29 @@
+###
+POST http://localhost:8081/newappointment
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "dateAndTime": "2025-12-15 14:30:00",
+  "department": "CARDIOLOGY",
+  "appointmentNotes": "Annual heart checkup",
+  "medicalStaffName": "David Williams"
+}
+
+<> 2025-05-21T012937.400.txt
+<> 2025-05-21T012919.201.json
+<> 2025-05-21T012845.500.json
+<> 2025-05-21T012553.500.json
+<> 2025-05-21T012157.500.json
+<> 2025-05-21T012034.400.json
+<> 2025-05-21T011957.400.json
+<> 2025-05-21T011827.500.json
+<> 2025-05-21T011239.500.json
+<> 2025-05-21T011225.500.json
+<> 2025-05-21T011019.400.json
+<> 2025-05-21T010357.500.json
+<> 2025-05-21T010254.500.json
+<> 2025-05-21T010247.400.json
+<> 2025-05-21T010046.500.json
+<> 2025-05-21T010030.400.json
+<> 2025-05-21T005858.500.json
