@@ -1,0 +1,21 @@
+###
+POST http://localhost:8081/patient/register
+Content-Type: application/json
+
+{
+  "firstName": "test",
+  "lastName": "testlastName",
+  "birthDate": "2000-01-01",
+  "gender": "M",
+  "address": "testAddress",
+  "city": "testCity",
+  "country": "testCountry",
+  "zipCode": "testZipCode",
+  "phoneNumber": "testPhone",
+  "email": "testemail@gmail.com",
+  "password": "1234",
+  "insuranceProvider": "testInsuranceProvider",
+  "insurancePolicyNumber": "testInsurancePolicyNumber",
+  "emergencyContactName": "testEmergency",
+  "emergencyContactPhone": "testEmergencyPhone"
+}
