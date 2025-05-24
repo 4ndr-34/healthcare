@@ -12,36 +12,36 @@ import java.time.format.DateTimeFormatter;
 
 public class CustomUserMapper {
 
-    public static Patient mapRegisterDTOToPatient(RegisterUserRequestDTO registerUserRequestDTO) {
+    public static Patient mapRegisterDTOToPatient(RegisterUserRequestDTO request) {
         Patient patient = new Patient();
-        patient.setFirstName(registerUserRequestDTO.getFirstName());
-        patient.setLastName(registerUserRequestDTO.getLastName());
-        patient.setBirthDate(registerUserRequestDTO.getBirthDate());
-        patient.setGender(registerUserRequestDTO.getGender());
-        patient.setAddress(registerUserRequestDTO.getAddress());
-        patient.setCity(registerUserRequestDTO.getCity());
-        patient.setCountry(registerUserRequestDTO.getCountry());
-        if(registerUserRequestDTO.getZipCode() != null) {
-            patient.setZipCode(registerUserRequestDTO.getZipCode());
+        patient.setFirstName(request.getFirstName());
+        patient.setLastName(request.getLastName());
+        patient.setBirthDate(request.getBirthDate());
+        patient.setGender(request.getGender());
+        patient.setAddress(request.getAddress());
+        patient.setCity(request.getCity());
+        patient.setCountry(request.getCountry());
+        if(request.getZipCode() != null) {
+            patient.setZipCode(request.getZipCode());
         }
-        patient.setPhoneNumber(registerUserRequestDTO.getPhoneNumber());
-        patient.setEmail(registerUserRequestDTO.getEmail());
-        patient.setPassword(registerUserRequestDTO.getPassword());
-        patient.setCreatedAt(LocalDate.parse(DateTimeFormatter.ofPattern("YYYY-MM-DD").format(LocalDate.now())));
-        if (patient.getInsuranceProvider()!= null) {
-            patient.setInsuranceProvider(registerUserRequestDTO.getInsuranceProvider());
+        patient.setPhoneNumber(request.getPhoneNumber());
+        patient.setEmail(request.getEmail());
+        patient.setPassword(request.getPassword());
+        patient.setCreatedAt(LocalDate.now());
+        if (request.getInsuranceProvider()!= null) {
+            patient.setInsuranceProvider(request.getInsuranceProvider());
         }
-        if (patient.getInsurancePolicyNumber()!= null) {
-            patient.setInsurancePolicyNumber(registerUserRequestDTO.getInsurancePolicyNumber());
+        if (request.getInsurancePolicyNumber()!= null) {
+            patient.setInsurancePolicyNumber(request.getInsurancePolicyNumber());
         }
-        if (patient.getEmergencyContactName()!= null) {
-            patient.setEmergencyContactName(registerUserRequestDTO.getEmergencyContactName());
+        if (request.getEmergencyContactName()!= null) {
+            patient.setEmergencyContactName(request.getEmergencyContactName());
         }
-        if (patient.getEmergencyContactPhone()!= null) {
-            patient.setEmergencyContactPhone(registerUserRequestDTO.getEmergencyContactPhone());
+        if (request.getEmergencyContactPhone()!= null) {
+            patient.setEmergencyContactPhone(request.getEmergencyContactPhone());
         }
         patient.setRole(User.UserRoles.PATIENT);
-        return patient;
+       return patient;
     }
 
 }
