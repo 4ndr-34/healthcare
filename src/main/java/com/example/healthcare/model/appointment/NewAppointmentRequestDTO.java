@@ -9,13 +9,9 @@ import java.time.LocalDateTime;
 @Data
 public class NewAppointmentRequestDTO {
 
-    private Long userId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateAndTime;
     private String department;
     private String appointmentNotes;
-    private String medicalStaffName;
-
-
 
 }
