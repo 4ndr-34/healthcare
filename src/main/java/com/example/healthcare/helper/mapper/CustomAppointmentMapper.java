@@ -1,6 +1,7 @@
 package com.example.healthcare.helper.mapper;
 
 import com.example.healthcare.entity.Appointment;
+import com.example.healthcare.model.appointment.AppointmentResponseDTO;
 import com.example.healthcare.model.appointment.NewAppointmentResponseDTO;
 
 public class CustomAppointmentMapper {
@@ -15,5 +16,17 @@ public class CustomAppointmentMapper {
         return response;
     }
 
+    public static AppointmentResponseDTO toAppointmentResponseDTO(Appointment appointment) {
+
+        AppointmentResponseDTO response = new AppointmentResponseDTO();
+
+        response.setId(appointment.getId());
+        response.setAppointmentDateTime(appointment.getAppointmentDateAndTime());
+        response.setAppointmentNotes(appointment.getAppointmentNotes());
+        response.setAppointmentStatus(appointment.getAppointmentStatus().name());
+        response.setCreatedAt(appointment.getCreatedAt().atStartOfDay());
+
+        return response;
+    }
 
 }

@@ -31,14 +31,11 @@ public class MedicalStaff extends User{
     private List<Appointment> appointments;
 
     public enum MedicalDepartment {
-        GENERAL_PRACTICE,
         PEDIATRICS,
         CARDIOLOGY,
+        PULMONOLOGY,
         DERMATOLOGY,
         ORTHOPEDICS,
-        OBSTETRICS_GYNECOLOGY,
-        INTERNAL_MEDICINE,
-        EMERGENCY_MEDICINE,
         RADIOLOGY,
         NEUROLOGY
     }
