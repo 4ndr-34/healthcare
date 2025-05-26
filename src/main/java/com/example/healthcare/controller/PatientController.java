@@ -63,7 +63,7 @@ public class PatientController {
         return "login-register/successful-registration";
     }
 
-    @GetMapping("/test-security-context")
+/*    @GetMapping("/test-security-context")
     public String testSecurityContext(Authentication authentication) {
         System.out.println("Current authorities: " + authentication.getAuthorities());
         return "Current roles: " + authentication.getAuthorities();
@@ -73,13 +73,20 @@ public class PatientController {
     public String checkSession(HttpSession session, Authentication auth) {
         return "Session ID: " + session.getId() +
                 "<br>Authorities: " + auth.getAuthorities();
+    }*/
+
+    @GetMapping("/appointments")
+    @PreAuthorize("hasRole('PATIENT')")
+    public String appointmentsPage( Model model, Authentication authentication) {
+        model.addAttribute("userAppointments", patientService.getAppointmentsOfPatient(authentication));
+        return "patient/appointments";
     }
 
     @GetMapping("/appointment/new")
     @PreAuthorize("hasRole('PATIENT')")
     public String newAppointmentPage(Model model) {
         model.addAttribute("request", new NewAppointmentRequestDTO());
-        return "patient/appointment/new-appointment";
+        return "patient/new-appointment";
     }
 
     @PostMapping("/appointment/new")
@@ -89,11 +96,6 @@ public class PatientController {
         return "redirect:/patient/appointments";
     }
 
-    @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentResponseDTO>> getPatientAppointments(@RequestParam Long patientId) {
-        List<AppointmentResponseDTO> appointments = patientService.getAppointmentsOfPatient(patientId);
-        return new ResponseEntity<>(appointments, HttpStatus.OK);
-    }
 
 
 }

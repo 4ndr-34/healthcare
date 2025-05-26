@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.nio.file.AccessDeniedException;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,17 +47,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         if(!userId.equals(currentUserId)){
             throw new IDMismatchException("User ID mismatch");
         }
-
+        LocalDateTime appointmentDateTime = LocalDateTime.of(request.getAppointmentDate(), request.getAppointmentTime());
         Appointment appointment = new Appointment();
         Optional<Patient> optionalPatient = patientRepository.findById(currentUserId);
 
         Optional<MedicalStaff> optionalStaff = staffRepository.findByDepartment(request.getDepartment());
 
         if(optionalPatient.isPresent() && optionalStaff.isPresent()) {
-            if(appointmentRepository.findByAppointmentDateAndTimeAndStaffId(request.getDateAndTime(), optionalStaff.get().getId()).isPresent()) {
+            if(appointmentRepository.findByAppointmentDateAndTimeAndStaffId(appointmentDateTime, optionalStaff.get().getId()).isPresent()) {
                 throw new AlreadyExistsException("There is another appointment booked at this time, try a different time.");
             } else {
-                appointment.setAppointmentDateAndTime(request.getDateAndTime());
+                appointment.setAppointmentDateAndTime(appointmentDateTime);
                 appointment.setAppointmentNotes(request.getAppointmentNotes());
                 appointment.setPatient(optionalPatient.get());
                 appointment.setMedicalStaff(optionalStaff.get());

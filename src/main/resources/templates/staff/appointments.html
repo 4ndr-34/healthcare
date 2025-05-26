@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Appointments</title>
+</head>
+<body>
+<!-- User Appointments Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Appointment Requests</h2>
+    <!-- Date Filter Form -->
+    <form th:action="@{/user/appointments}" method="get" class="form-inline">
+        <div class="form-group mr-2">
+            <label for="appointmentDate" class="mr-2">Filter by date:</label>
+            <input type="date" class="form-control" id="appointmentDate" name="date"
+                   th:value="${selectedDate ? #temporals.format(selectedDate, 'yyyy-MM-dd') : ''}">
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-filter"></i> Filter
+        </button>
+        <a th:href="@{/user/appointments}" class="btn btn-outline-secondary ml-2">
+            <i class="fas fa-sync"></i> Reset
+        </a>
+    </form>
+</div>
+
+<!-- Appointments Table -->
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="thead-light">
+        <tr>
+            <th>Requested Date/Time</th>
+            <th>Notes</th>
+            <th>Status</th>
+            <th>Submitted On</th>
+            <th>Last Updated</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="appointment : ${userAppointments}"
+            th:classappend="${appointment.appointmentStatus.name() == 'REQUESTED'} ? 'table-warning' :
+                               ${appointment.appointmentStatus.name() == 'APPROVED'} ? 'table-success' :
+                               ${appointment.appointmentStatus.name() == 'DECLINED'} ? 'table-danger' : ''">
+            <!-- Date & Time -->
+            <td th:text="${#temporals.format(appointment.appointmentDateAndTime, 'MMM dd, yyyy hh:mm a')}"></td>
+
+            <!-- Notes -->
+            <td th:text="${appointment.appointmentNotes} ?: 'No notes'"></td>
+
+            <!-- Status with badge styling -->
+            <td>
+                    <span th:classappend="'badge ' +
+                        ${appointment.appointmentStatus.name() == 'REQUESTED'} ? 'badge-warning' :
+                        ${appointment.appointmentStatus.name() == 'APPROVED'} ? 'badge-success' :
+                        ${appointment.appointmentStatus.name() == 'DECLINED'} ? 'badge-danger' : 'badge-secondary'"
+                          th:text="${appointment.appointmentStatus}">
+                    </span>
+            </td>
+
+            <!-- Created Date -->
+            <td th:text="${#temporals.format(appointment.createdAt, 'MMM dd, yyyy')}"></td>
+
+            <!-- Last Updated -->
+            <td th:text="${#temporals.format(appointment.lastUpdated, 'MMM dd, yyyy')}"></td>
+
+            <!-- Actions -->
+            <td>
+                <div th:switch="${appointment.appointmentStatus.name()}">
+                    <!-- For requested appointments, show cancel option -->
+                    <div th:case="REQUESTED">
+                        <form th:action="@{/user/appointments/{id}/cancel(id=${appointment.id})}"
+                              method="post" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- For approved appointments, show view details -->
+                    <div th:case="APPROVED">
+                        <a th:href="@{/user/appointments/{id}(id=${appointment.id})}"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i> Details
+                        </a>
+                    </div>
+
+                    <!-- For declined appointments -->
+                    <div th:case="DECLINED">
+                        <button class="btn btn-sm btn-outline-secondary" disabled>
+                            <i class="fas fa-lock"></i> Declined
+                        </button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Empty state message -->
+<div th:if="${#lists.isEmpty(userAppointments)}" class="alert alert-info">
+    <i class="fas fa-info-circle"></i> No appointment requests found
+    <span th:if="${selectedDate}">for [[${#temporals.format(selectedDate, 'MMMM dd, yyyy')}]]</span>.
+    <a th:href="@{/user/appointments/new}" class="alert-link ml-2">
+        <i class="fas fa-plus"></i> Request a new appointment
+    </a>
+</div>
+</body>
+</html>

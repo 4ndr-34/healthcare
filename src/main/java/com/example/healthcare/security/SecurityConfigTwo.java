@@ -3,6 +3,9 @@ package com.example.healthcare.security;
 
 import com.example.healthcare.repository.PatientRepository;
 import com.example.healthcare.repository.StaffRepository;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,15 +18,20 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -96,18 +104,25 @@ public class SecurityConfigTwo {
                 new AntPathRequestMatcher("/patient/login"),
                 new AntPathRequestMatcher("/staff/login"));
         filter.setAuthenticationManager(authenticationManager());
-        filter.setAuthenticationSuccessHandler((request, response, authentication) -> {
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            HttpSession session = request.getSession(true);
-            System.out.println("=== AUTHENTICATION SUCCESS ===");
-            System.out.println("Principal class: " + authentication.getPrincipal().getClass());
-            System.out.println("Authorities: " + authentication.getAuthorities());
-            System.out.println("SessionID after login: " + session.getId());
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            if (userDetails.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_PATIENT"))) {
-                response.sendRedirect("/patient/home");
-            } else {
-                response.sendRedirect("/staff/home");
+        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler() {
+            @Override
+            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                SecurityContext securityContext = SecurityContextHolder.getContext();
+                securityContext.setAuthentication(authentication);
+
+                HttpSession session = request.getSession(true);
+                session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
+
+                System.out.println("=== AUTHENTICATION SUCCESS ===");
+                System.out.println("Principal class: " + authentication.getPrincipal().getClass());
+                System.out.println("Authorities: " + authentication.getAuthorities());
+                System.out.println("SessionID after login: " + session.getId());
+                CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+                if (userDetails.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_PATIENT"))) {
+                    response.sendRedirect("/patient/home");
+                } else {
+                    response.sendRedirect("/staff/home");
+                }
             }
         });
         filter.setAuthenticationFailureHandler((request, response, exception) -> {

@@ -2,6 +2,7 @@ package com.example.healthcare.service.impl;
 
 import com.example.healthcare.entity.Appointment;
 import com.example.healthcare.entity.Appointment;
+import com.example.healthcare.helper.exceptions.IDMismatchException;
 import com.example.healthcare.helper.exceptions.NotFoundException;
 import com.example.healthcare.helper.mapper.CustomAppointmentMapper;
 import com.example.healthcare.helper.mapper.CustomUserMapper;
@@ -89,14 +90,18 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public List<AppointmentResponseDTO> getAppointmentsOfPatient(Long patientId) {
-        if(!patientRepository.existsById(patientId)) {
-            throw new NotFoundException("Patient with ID: " + patientId + " does not exist.");
+    public List<AppointmentResponseDTO> getAppointmentsOfPatient(Authentication authentication) {
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Long currentUserId = ((CustomUserDetails) userDetails).getId();
+
+
+        if(!patientRepository.existsById(currentUserId)) {
+            throw new NotFoundException("Patient with ID: " + currentUserId + " does not exist.");
+        } else {
+            List<Appointment> appointments = appointmentRepository.findAllByPatientId(currentUserId);
+            return appointments.stream().map(CustomAppointmentMapper::toAppointmentResponseDTO).toList();
         }
-
-        List<Appointment> appointments = appointmentRepository.findAllByPatientId(patientId);
-
-        return appointments.stream().map(CustomAppointmentMapper::toAppointmentResponseDTO).toList();
     }
 
 

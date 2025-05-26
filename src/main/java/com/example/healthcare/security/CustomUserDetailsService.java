@@ -43,7 +43,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .email(patient.getEmail())
                     .password(patient.getPassword())
                     .userRole(patient.getRole().name())
-                    .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+patient.getRole().name())))
+                    .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_PATIENT")))
                     .build();
 
         }

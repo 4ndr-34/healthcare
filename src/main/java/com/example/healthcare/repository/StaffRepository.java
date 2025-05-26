@@ -20,7 +20,7 @@ public interface StaffRepository extends JpaRepository<MedicalStaff, Long> {
     @Query(value = "SELECT * FROM staff WHERE department=:departmentName AND first_name=:firstName AND last_name=:lastName LIMIT 1", nativeQuery = true)
     Optional<MedicalStaff> findByDepartmentAndFirstNameAndLastName(String departmentName, String firstName, String lastName);
 
-    @Query(value = "SELECT staff FROM medicalstaff staff WHERE department =: departmentName", nativeQuery = true)
+    @Query(value = "SELECT * FROM staff WHERE department = :departmentName LIMIT 1", nativeQuery = true)
     Optional<MedicalStaff> findByDepartment(String departmentName);
 
 }
