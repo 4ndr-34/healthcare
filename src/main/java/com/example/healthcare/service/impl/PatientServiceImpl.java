@@ -1,16 +1,22 @@
 package com.example.healthcare.service.impl;
 
 import com.example.healthcare.entity.Appointment;
+import com.example.healthcare.entity.Appointment;
+import com.example.healthcare.helper.exceptions.NotFoundException;
+import com.example.healthcare.helper.mapper.CustomAppointmentMapper;
 import com.example.healthcare.helper.mapper.CustomUserMapper;
 import com.example.healthcare.model.appointment.NewAppointmentRequestDTO;
 import com.example.healthcare.model.login.LoginRequestDTO;
+import com.example.healthcare.model.appointment.AppointmentResponseDTO;
 import com.example.healthcare.model.register.RegisterUserRequestDTO;
 import com.example.healthcare.model.register.SuccessfulRegisterDTO;
+import com.example.healthcare.repository.AppointmentRepository;
 import com.example.healthcare.repository.PatientRepository;
 import com.example.healthcare.security.CustomUserDetails;
 import com.example.healthcare.service.PatientService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import com.example.healthcare.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +30,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import java.security.Principal;
 
 @Service
@@ -32,6 +40,7 @@ import java.security.Principal;
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
+    private final AppointmentRepository appointmentRepository;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final SecurityContextRepository securityContextRepository;
@@ -78,6 +87,17 @@ public class PatientServiceImpl implements PatientService {
 
     }*/
 
+
+    @Override
+    public List<AppointmentResponseDTO> getAppointmentsOfPatient(Long patientId) {
+        if(!patientRepository.existsById(patientId)) {
+            throw new NotFoundException("Patient with ID: " + patientId + " does not exist.");
+        }
+
+        List<Appointment> appointments = appointmentRepository.findAllByPatientId(patientId);
+
+        return appointments.stream().map(CustomAppointmentMapper::toAppointmentResponseDTO).toList();
+    }
 
 
 }

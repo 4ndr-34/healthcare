@@ -1,5 +1,6 @@
 package com.example.healthcare.controller;
 
+import com.example.healthcare.model.appointment.AppointmentResponseDTO;
 import com.example.healthcare.model.appointment.NewAppointmentRequestDTO;
 import com.example.healthcare.model.appointment.NewAppointmentResponseDTO;
 import com.example.healthcare.model.login.LoginRequestDTO;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/patient")
@@ -86,6 +89,11 @@ public class PatientController {
         return "redirect:/patient/appointments";
     }
 
+    @GetMapping("/appointments")
+    public ResponseEntity<List<AppointmentResponseDTO>> getPatientAppointments(@RequestParam Long patientId) {
+        List<AppointmentResponseDTO> appointments = patientService.getAppointmentsOfPatient(patientId);
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
 
 
 }
