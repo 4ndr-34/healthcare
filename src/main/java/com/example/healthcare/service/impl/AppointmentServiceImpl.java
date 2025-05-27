@@ -47,17 +47,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         if(!userId.equals(currentUserId)){
             throw new IDMismatchException("User ID mismatch");
         }
-        LocalDateTime appointmentDateTime = LocalDateTime.of(request.getAppointmentDate(), request.getAppointmentTime());
         Appointment appointment = new Appointment();
         Optional<Patient> optionalPatient = patientRepository.findById(currentUserId);
 
         Optional<MedicalStaff> optionalStaff = staffRepository.findByDepartment(request.getDepartment());
 
         if(optionalPatient.isPresent() && optionalStaff.isPresent()) {
-            if(appointmentRepository.findByAppointmentDateAndTimeAndStaffId(appointmentDateTime, optionalStaff.get().getId()).isPresent()) {
+            if(appointmentRepository.findByAppointmentDateAndTimeAndStaffId(request.getAppointmentDate(), request.getAppointmentTime(), optionalStaff.get().getId()).isPresent()) {
                 throw new AlreadyExistsException("There is another appointment booked at this time, try a different time.");
             } else {
-                appointment.setAppointmentDateAndTime(appointmentDateTime);
+                appointment.setAppointmentDate(request.getAppointmentDate());
+                appointment.setAppointmentTime(request.getAppointmentTime());
                 appointment.setAppointmentNotes(request.getAppointmentNotes());
                 appointment.setPatient(optionalPatient.get());
                 appointment.setMedicalStaff(optionalStaff.get());

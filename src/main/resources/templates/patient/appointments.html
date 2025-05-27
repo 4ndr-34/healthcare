@@ -29,7 +29,8 @@
     </thead>
     <tbody>
     <tr th:each="appointment : ${userAppointments}">
-      <td th:text="${#temporals.format(appointment.appointmentDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+      <td th:text="${#temporals.format(appointment.appointmentTime, 'yyyy-MM-dd')}"></td>
+      <td th:text="${#temporals.format(appointment.appointmentTime, 'HH:mm')}"></td>
       <td th:text="${appointment.appointmentNotes}"></td>
       <td>
                        <span th:text="${appointment.appointmentStatus}"

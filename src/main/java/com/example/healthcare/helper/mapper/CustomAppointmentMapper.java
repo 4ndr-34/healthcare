@@ -6,7 +6,7 @@ import com.example.healthcare.model.appointment.NewAppointmentResponseDTO;
 
 public class CustomAppointmentMapper {
 
-    public static NewAppointmentResponseDTO toNewAppointmentResponseDTO(Appointment appointment) {
+    /*public static NewAppointmentResponseDTO toNewAppointmentResponseDTO(Appointment appointment) {
         NewAppointmentResponseDTO response = new NewAppointmentResponseDTO();
         response.setDateAndTime(appointment.getAppointmentDateAndTime());
         response.setDoctorName(appointment.getMedicalStaff().getFirstName() + " " + appointment.getMedicalStaff().getLastName());
@@ -14,14 +14,15 @@ public class CustomAppointmentMapper {
         response.setPatientName(appointment.getPatient().getFirstName() + " " + appointment.getPatient().getLastName());
         response.setStatus(appointment.getAppointmentStatus().name());
         return response;
-    }
+    }*/
 
     public static AppointmentResponseDTO toAppointmentResponseDTO(Appointment appointment) {
 
         AppointmentResponseDTO response = new AppointmentResponseDTO();
 
         response.setId(appointment.getId());
-        response.setAppointmentDateTime(appointment.getAppointmentDateAndTime());
+        response.setAppointmentDate(appointment.getAppointmentDate());
+        response.setAppointmentTime(appointment.getAppointmentTime());
         response.setAppointmentNotes(appointment.getAppointmentNotes());
         response.setAppointmentStatus(appointment.getAppointmentStatus().name());
         response.setCreatedAt(appointment.getCreatedAt().atStartOfDay());
