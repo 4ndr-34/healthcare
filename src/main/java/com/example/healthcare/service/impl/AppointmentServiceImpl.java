@@ -57,4 +57,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
+    @Override
+    public void updateAppointmentStatus(Long appointmentId, Appointment.AppointmentStatus status) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new NotFoundException("Appointment with ID " + appointmentId + " not found"));
+
+        appointment.setAppointmentStatus(status);
+        appointment.setLastUpdated(LocalDate.now());
+
+        appointmentRepository.save(appointment);
+    }
 }
