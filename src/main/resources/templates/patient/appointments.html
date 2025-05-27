@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -21,7 +19,8 @@
   <table th:unless="${#lists.isEmpty(userAppointments)}" class="table table-striped">
     <thead class="table-dark">
     <tr>
-      <th>Date & Time</th>
+      <th>Date</th>
+      <th>Time</th>
       <th>Notes</th>
       <th>Status</th>
       <th>Created</th>
@@ -29,7 +28,7 @@
     </thead>
     <tbody>
     <tr th:each="appointment : ${userAppointments}">
-      <td th:text="${#temporals.format(appointment.appointmentTime, 'yyyy-MM-dd')}"></td>
+      <td th:text="${#temporals.format(appointment.appointmentDate, 'yyyy-MM-dd')}"></td>
       <td th:text="${#temporals.format(appointment.appointmentTime, 'HH:mm')}"></td>
       <td th:text="${appointment.appointmentNotes}"></td>
       <td>
