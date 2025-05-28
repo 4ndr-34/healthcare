@@ -14,12 +14,7 @@ public class Billing {
     private Long id;
     private Double amount;
     private LocalDate billingDate;
-    private LocalDate dueDate;//remove
-    private BillingStatus status;//remove
     private String insuranceClaimId;//change to String
-    private Double insuranceCoverage;//remove
-    private Double patientResponsibility;//remove
-    private LocalDate paymentDate;//remove
     private String paymentMethod;
     private LocalDate createdAt;
     private LocalDate updatedAt;
@@ -29,13 +24,6 @@ public class Billing {
     @JoinColumn(name="patient_id")
     private Patient patient;
 
-    //remove
-    public enum BillingStatus {
-        PENDING,
-        PAID,
-        INSURANCE_CLAIM,
-        OVERDUE,
-        WRITE_OFF
-    }
+
 
 }
