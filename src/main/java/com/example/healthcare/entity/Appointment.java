@@ -19,6 +19,8 @@ public class Appointment {
     private LocalTime appointmentTime;
     private String appointmentNotes;
     @Enumerated(EnumType.STRING)
+    private MedicalStaff.MedicalDepartment medicalDepartment;
+    @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus;
     private LocalDate createdAt;
     private LocalDate lastUpdated;

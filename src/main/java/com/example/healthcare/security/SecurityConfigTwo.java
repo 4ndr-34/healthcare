@@ -47,10 +47,12 @@ public class SecurityConfigTwo {
         http.csrf(AbstractHttpConfigurer::disable)
                 .requestCache(RequestCacheConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/patient/login", "/staff/login", "/patient/login-register",
-                                "/patient/register", "/patient/successful-registration").permitAll()
+                        .requestMatchers("/patient/login", "/staff/login", "/staff/login/**", "/patient/login-register",
+                                "/patient/register", "/patient/successful-registration","/static/**",
+                                "/css/**",
+                                "/js/**").permitAll()
                         .requestMatchers("/patient/**").hasRole("PATIENT")
-                        //.requestMatchers("/staff/**").hasAnyRole("STAFF", "ADMIN")
+                        .requestMatchers("/staff/**").hasAnyRole("STAFF", "ADMIN", "DOCTOR")
                         .anyRequest().authenticated())
                 .addFilterBefore(multiLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -64,7 +66,16 @@ public class SecurityConfigTwo {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID"));
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            SecurityContextHolder.clearContext();
+                            if (authentication != null && authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_PATIENT"))) {
+                                response.sendRedirect("/patient/login-register");
+                            } else {
+                                response.sendRedirect("/staff/login");
+                            }
+                        }));
 
         http.authenticationProvider(authenticationProvider());
         return http.build();
@@ -101,8 +112,8 @@ public class SecurityConfigTwo {
     @Bean
     public MultiLoginFilter multiLoginFilter() throws Exception {
         MultiLoginFilter filter = new MultiLoginFilter(
-                new AntPathRequestMatcher("/patient/login"),
-                new AntPathRequestMatcher("/staff/login"));
+                new AntPathRequestMatcher("/patient/login", "POST"),
+                new AntPathRequestMatcher("/staff/login", "POST"));
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler() {
             @Override

@@ -3,22 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Appointments</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <!-- User Appointments Header -->
+<div th:replace="~{fragments/staff-header :: main-header}"></div>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>My Appointment Requests</h2>
     <!-- Date Filter Form -->
-    <form th:action="@{/user/appointments}" method="get" class="form-inline">
+    <form th:action="@{/staff/appointments}" method="get" class="form-inline">
         <div class="form-group mr-2">
             <label for="appointmentDate" class="mr-2">Filter by date:</label>
             <input type="date" class="form-control" id="appointmentDate" name="date"
-                   th:value="${selectedDate ? #temporals.format(selectedDate, 'yyyy-MM-dd') : ''}">
+                   onsubmit="disableSubmitButton(this)"
+                   th:value="${selectedDate != null ? #temporals.format(selectedDate, 'yyyy-MM-dd') : ''}">
         </div>
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-filter"></i> Filter
         </button>
-        <a th:href="@{/user/appointments}" class="btn btn-outline-secondary ml-2">
+        <a th:href="@{/staff/appointments}" class="btn btn-outline-secondary ml-2">
             <i class="fas fa-sync"></i> Reset
         </a>
     </form>
@@ -27,48 +31,57 @@
 <!-- Appointments Table -->
 <div class="table-responsive">
     <table class="table table-hover">
-        <thead class="thead-light">
+        <thead class="table-dark">
         <tr>
-            <th>Requested Date/Time</th>
+            <th>Requested Date</th>
+            <th>Requested Time</th>
             <th>Notes</th>
             <th>Status</th>
             <th>Submitted On</th>
-            <th>Last Updated</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="appointment : ${userAppointments}"
-            th:classappend="${appointment.appointmentStatus.name() == 'REQUESTED'} ? 'table-warning' :
-                               ${appointment.appointmentStatus.name() == 'APPROVED'} ? 'table-success' :
-                               ${appointment.appointmentStatus.name() == 'DECLINED'} ? 'table-danger' : ''">
+            th:classappend="${appointment.appointmentStatus == 'REQUESTED'} ? 'table-warning' :
+                   (${appointment.appointmentStatus == 'APPROVED'} ? 'table-success' :
+                   (${appointment.appointmentStatus == 'DECLINED'} ? 'table-danger' : ''))">
             <!-- Date & Time -->
-            <td th:text="${#temporals.format(appointment.appointmentDateAndTime, 'MMM dd, yyyy hh:mm a')}"></td>
+            <td th:text="${#temporals.format(appointment.appointmentDate, 'MMM dd, yyyy')}"></td>
+            <td th:text="${#temporals.format(appointment.appointmentTime, 'hh:mm')}"></td>
 
             <!-- Notes -->
             <td th:text="${appointment.appointmentNotes} ?: 'No notes'"></td>
 
             <!-- Status with badge styling -->
             <td>
-                    <span th:classappend="'badge ' +
-                        ${appointment.appointmentStatus.name() == 'REQUESTED'} ? 'badge-warning' :
-                        ${appointment.appointmentStatus.name() == 'APPROVED'} ? 'badge-success' :
-                        ${appointment.appointmentStatus.name() == 'DECLINED'} ? 'badge-danger' : 'badge-secondary'"
-                          th:text="${appointment.appointmentStatus}">
-                    </span>
+                    <span th:text="${appointment.appointmentStatus}"
+                          th:switch="${appointment.appointmentStatus}">
+        <span th:case="'REQUESTED'" class="badge bg-primary">REQUESTED</span>
+        <span th:case="'CONFIRMED'" class="badge bg-success">CONFIRMED</span>
+        <span th:case="'COMPLETED'" class="badge bg-info">COMPLETED</span>
+        <span th:case="'CANCELLED'" class="badge bg-danger">CANCELLED</span>
+    </span>
             </td>
 
             <!-- Created Date -->
             <td th:text="${#temporals.format(appointment.createdAt, 'MMM dd, yyyy')}"></td>
 
             <!-- Last Updated -->
-            <td th:text="${#temporals.format(appointment.lastUpdated, 'MMM dd, yyyy')}"></td>
+            <!--<td th:text="${#temporals.format(appointment.lastUpdated, 'MMM dd, yyyy')}"></td>-->
 
             <!-- Actions -->
             <td>
-                <div th:switch="${appointment.appointmentStatus.name()}">
+                <div th:switch="${appointment.appointmentStatus}">
                     <!-- For requested appointments, show cancel option -->
                     <div th:case="REQUESTED">
+                        <form th:action="@{/user/appointments/{id}/approve(id=${appointment.id})}"
+                              method="post"
+                              onsubmit="return confirm('Are you sure you want to approve this appointment?');">
+                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-times"></i> Approve
+                            </button>
+                        </form>
                         <form th:action="@{/user/appointments/{id}/cancel(id=${appointment.id})}"
                               method="post" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
                             <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -77,13 +90,6 @@
                         </form>
                     </div>
 
-                    <!-- For approved appointments, show view details -->
-                    <div th:case="APPROVED">
-                        <a th:href="@{/user/appointments/{id}(id=${appointment.id})}"
-                           class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-eye"></i> Details
-                        </a>
-                    </div>
 
                     <!-- For declined appointments -->
                     <div th:case="DECLINED">
@@ -102,9 +108,15 @@
 <div th:if="${#lists.isEmpty(userAppointments)}" class="alert alert-info">
     <i class="fas fa-info-circle"></i> No appointment requests found
     <span th:if="${selectedDate}">for [[${#temporals.format(selectedDate, 'MMMM dd, yyyy')}]]</span>.
-    <a th:href="@{/user/appointments/new}" class="alert-link ml-2">
-        <i class="fas fa-plus"></i> Request a new appointment
-    </a>
 </div>
 </body>
+<script>
+    function disableSubmitButton(form) {
+        const buttons = form.querySelectorAll("button[type='submit']");
+        buttons.forEach(btn => {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Filtering...';
+        });
+    }
+</script>
 </html>
