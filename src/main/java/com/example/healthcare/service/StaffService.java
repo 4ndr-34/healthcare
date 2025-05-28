@@ -1,5 +1,9 @@
 package com.example.healthcare.service;
 
+import com.example.healthcare.model.billing.BillingRequestDTO;
+import com.example.healthcare.model.prescription.PrescriptionRequestDTO;
+
+
 import com.example.healthcare.model.appointment.AppointmentResponseDTO;
 import com.example.healthcare.model.login.LoginRequestDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +14,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface StaffService {
+
+        public void createPrescription(PrescriptionRequestDTO request, Long patientId);
+
+        public void createBilling(BillingRequestDTO request, Long appointmentId, Long patientId);
 
     void staffLogin(LoginRequestDTO authRequest, HttpServletRequest request, HttpServletResponse response);
 

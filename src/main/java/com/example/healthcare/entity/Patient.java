@@ -25,6 +25,8 @@ public class Patient extends User{
     private List<Appointment> appointments;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "patient", cascade = CascadeType.PERSIST)
     private List<Billing> billings;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "patient", cascade = CascadeType.PERSIST)
+    private List<Prescription> prescriptions;
 
 
 }
