@@ -1,6 +1,7 @@
 package com.example.healthcare.controller;
 
 import com.example.healthcare.model.login.LoginRequestDTO;
+import com.example.healthcare.model.prescription.PrescriptionRequestDTO;
 import com.example.healthcare.service.impl.StaffServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +36,9 @@ public class StaffController {
         return "staff/home";
     }
 
+
+
+    //APPOINTMENTS
     @GetMapping("/appointments")
     @PreAuthorize("hasRoles('STAFF','DOCTOR','ADMIN')")
     public String appointmentsPage (Model model, @RequestParam(name = "date", required = false) LocalDate selectedDate, Authentication authentication) {
@@ -44,7 +48,7 @@ public class StaffController {
         }
 
         model.addAttribute("selectedDate", selectedDate);
-        model.addAttribute("userAppointments", staffService.getAppointmentsForStaff(authentication, selectedDate));
+        model.addAttribute( "userAppointments", staffService.getAppointmentsForStaff(authentication, selectedDate));
         return "staff/appointments";
     }
 
@@ -53,5 +57,36 @@ public class StaffController {
                 .getRequest()
                 .getParameterMap()
                 .containsKey("date");
+    }
+
+
+
+    //PRESCRIPTIONS
+    @GetMapping("/appointments/newprescription/{patientId}/{appointmentId}")
+    public String newPrescription(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId, Model model) {
+        model.addAttribute("patientId", patientId);
+        model.addAttribute("appointmentId", appointmentId);
+        model.addAttribute("prescription", new PrescriptionRequestDTO());
+        return "staff/new-prescription";
+    }
+
+    @PostMapping("/appointments/newprescription/{patientId}/{appointmentId}")
+    public String newPrescription(@PathVariable("patientId") Long patientId,@PathVariable("appointmentId") Long appointmentId, @ModelAttribute("request") PrescriptionRequestDTO request) {
+        int success = staffService.createPrescription(request, patientId, appointmentId);
+        if (success == 1) {
+            return "redirect:/staff/prescription/newprescription-success";
+        } else {
+            return "redirect:/staff/prescription/newprescription-success";
+        }
+    }
+
+    @GetMapping("/prescription/newprescription-success")
+    public String newPrescriptionSuccess() {
+        return "staff/new-prescription-success";
+    }
+
+    @GetMapping("/prescription/newprescription-failed")
+    public String newPrescriptionFailed() {
+        return "staff/new-prescription-failed";
     }
 }

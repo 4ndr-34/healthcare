@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface StaffService {
 
-        public void createPrescription(PrescriptionRequestDTO request, Long patientId);
+        public int createPrescription(PrescriptionRequestDTO request, Long patientId, Long appointmentId);
 
         public void createBilling(BillingRequestDTO request, Long appointmentId, Long patientId);
 

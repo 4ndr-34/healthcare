@@ -38,6 +38,7 @@
             <th>Notes</th>
             <th>Status</th>
             <th>Submitted On</th>
+            <th>Patient</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -67,6 +68,8 @@
             <!-- Created Date -->
             <td th:text="${#temporals.format(appointment.createdAt, 'MMM dd, yyyy')}"></td>
 
+            <!-- Patient ID-->
+            <td th:text="${appointment.patientId}"></td>
             <!-- Last Updated -->
             <!--<td th:text="${#temporals.format(appointment.lastUpdated, 'MMM dd, yyyy')}"></td>-->
 
@@ -75,17 +78,26 @@
                 <div th:switch="${appointment.appointmentStatus}">
                     <!-- For requested appointments, show cancel option -->
                     <div th:case="REQUESTED">
-                        <form th:action="@{/user/appointments/{id}/approve(id=${appointment.id})}"
+                        <form th:action="@{/staff/appointments/approve(id=${appointment.id})}"
                               method="post"
                               onsubmit="return confirm('Are you sure you want to approve this appointment?');">
                             <button type="submit" class="btn btn-sm btn-outline-success">
                                 <i class="fas fa-times"></i> Approve
                             </button>
                         </form>
-                        <form th:action="@{/user/appointments/{id}/cancel(id=${appointment.id})}"
+                        <form th:action="@{/staff/appointments/cancel(id=${appointment.id})}"
                               method="post" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
                             <button type="submit" class="btn btn-sm btn-outline-danger">
                                 <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </form>
+                    </div>
+                    <!-- For CREATED appointments, show prescription option -->
+                    <div th:case="CONFIRMED">
+                        <form th:action="@{/staff/appointments/newprescription/{patientId}/{appointmentId}(patientId=${appointment.patientId}, appointmentId=${appointment.id})}"
+                              method="get">
+                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-prescription"></i> Create Prescription
                             </button>
                         </form>
                     </div>
