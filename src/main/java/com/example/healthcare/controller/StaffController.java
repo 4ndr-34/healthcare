@@ -63,6 +63,7 @@ public class StaffController {
 
     //PRESCRIPTIONS
     @GetMapping("/appointments/newprescription/{patientId}/{appointmentId}")
+    @PreAuthorize("hasRoles('DOCTOR')")
     public String newPrescription(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId, Model model) {
         model.addAttribute("patientId", patientId);
         model.addAttribute("appointmentId", appointmentId);
@@ -71,6 +72,7 @@ public class StaffController {
     }
 
     @PostMapping("/appointments/newprescription/{patientId}/{appointmentId}")
+    @PreAuthorize("hasRoles('DOCTOR')")
     public String newPrescription(@PathVariable("patientId") Long patientId,@PathVariable("appointmentId") Long appointmentId, @ModelAttribute("request") PrescriptionRequestDTO request) {
         int success = staffService.createPrescription(request, patientId, appointmentId);
         if (success == 1) {
@@ -81,11 +83,13 @@ public class StaffController {
     }
 
     @GetMapping("/prescription/newprescription-success")
+    @PreAuthorize("hasRoles('DOCTOR')")
     public String newPrescriptionSuccess() {
         return "staff/new-prescription-success";
     }
 
     @GetMapping("/prescription/newprescription-failed")
+    @PreAuthorize("hasRoles('DOCTOR')")
     public String newPrescriptionFailed() {
         return "staff/new-prescription-failed";
     }
