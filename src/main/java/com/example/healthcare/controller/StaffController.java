@@ -11,17 +11,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.healthcare.entity.Billing;
+
+
 import com.example.healthcare.model.billing.BillingRequestDTO;
 import com.example.healthcare.entity.Appointment;
 import com.example.healthcare.model.register.RegisterUserRequestDTO;
 import com.example.healthcare.model.register.SuccessfulRegisterDTO;
 import com.example.healthcare.service.impl.AppointmentServiceImpl;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
 
 import java.time.LocalDate;
 
@@ -31,6 +31,7 @@ import java.time.LocalDate;
 public class StaffController {
 
     private final StaffServiceImpl staffService;
+    private final AppointmentServiceImpl appointmentService;
 
     @GetMapping("/login")
     public String staffLogin() {
@@ -80,12 +81,9 @@ public class StaffController {
         model.addAttribute("appointmentId", appointmentId);
         model.addAttribute("prescription", new PrescriptionDTO());
         return "staff/new-prescription";
-    private final AppointmentServiceImpl appointmentService;
-
-    @PostMapping("/create")
-    public SuccessfulRegisterDTO createNewStaffMember(@RequestBody RegisterUserRequestDTO registerUserRequestDTO){
-        return null;
     }
+
+
 
     @PostMapping("/appointments/newprescription/{patientId}/{appointmentId}")
     @PreAuthorize("hasRoles('DOCTOR')")
