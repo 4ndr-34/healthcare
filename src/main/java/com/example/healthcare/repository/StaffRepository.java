@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface StaffRepository extends JpaRepository<MedicalStaff, Long> {
 
+    Optional<MedicalStaff> findById(Long id);
+
     Optional<MedicalStaff> findByEmail(String email);
 
     Optional<MedicalStaff> findByFirstNameAndLastName(String firstName, String lastName);

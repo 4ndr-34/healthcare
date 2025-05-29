@@ -6,6 +6,8 @@ import com.example.healthcare.model.prescription.PrescriptionDTO;
 
 import com.example.healthcare.model.appointment.AppointmentResponseDTO;
 import com.example.healthcare.model.login.LoginRequestDTO;
+import com.example.healthcare.model.medicalRecord.MedicalRecordRequestDTO;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -23,5 +25,6 @@ public interface StaffService {
 
     List<AppointmentResponseDTO> getAppointmentsForStaff(Authentication authentication, LocalDate appointmentDate);
 
+    public int createMedicalRecord(MedicalRecordRequestDTO request, Long appointmentId, Long patientId, Authentication authentication);
     
 }

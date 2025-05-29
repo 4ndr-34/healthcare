@@ -6,6 +6,7 @@ import com.example.healthcare.helper.exceptions.NotFoundException;
 import com.example.healthcare.helper.mapper.CustomAppointmentMapper;
 import com.example.healthcare.model.appointment.AppointmentResponseDTO;
 import com.example.healthcare.model.login.LoginRequestDTO;
+import com.example.healthcare.model.medicalRecord.MedicalRecordRequestDTO;
 import com.example.healthcare.repository.AppointmentRepository;
 import com.example.healthcare.repository.StaffRepository;
 import com.example.healthcare.security.CustomUserDetails;
@@ -31,13 +32,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.healthcare.entity.Prescription;
-import com.example.healthcare.entity.Appointment.AppointmentStatus;
-import com.example.healthcare.entity.Patient;
-import com.example.healthcare.entity.Billing;
+import com.example.healthcare.entity.*;
 import com.example.healthcare.model.billing.BillingRequestDTO;
 import com.example.healthcare.model.prescription.PrescriptionDTO;
 import com.example.healthcare.repository.BillingRepository;
+import com.example.healthcare.repository.MedicalRecordRepository;
 import com.example.healthcare.repository.PatientRepository;
 import com.example.healthcare.repository.PrescriptionRepository;
 
@@ -57,6 +56,7 @@ public class StaffServiceImpl implements StaffService{
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final SecurityContextRepository securityContextRepository;
     private final StaffRepository staffRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
 
     @Override
     public int createPrescription(PrescriptionDTO request, Long patientId, Long appointmentId){
@@ -137,4 +137,29 @@ public class StaffServiceImpl implements StaffService{
             return appointments.stream().map(CustomAppointmentMapper::toAppointmentResponseDTO).toList();
         }
     }
-}
+
+    @Override
+    public int createMedicalRecord(MedicalRecordRequestDTO request, Long appointmentId, Long patientId, Authentication authentication) {
+
+        Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
+        Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+        
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Long currentUserId = ((CustomUserDetails) userDetails).getId();
+        Optional<MedicalStaff> optionalMedicalStaff = staffRepository.findById(currentUserId); 
+        
+        if(!optionalAppointment.isPresent() || !optionalPatient.isPresent() || !optionalMedicalStaff.isPresent()) {
+                        throw new NotFoundException("Appointment or User does not exist.");
+        } else {
+            MedicalRecord medicalRecord = new MedicalRecord();
+            medicalRecord.setDiagnosis(request.getDiagnosis());
+            medicalRecord.setTreatmentPlan(request.getTreatmentPlan());
+            medicalRecord.setNotes(request.getNotes());
+            medicalRecord.setMedicalStaff(optionalMedicalStaff.get().getFirstName()+ " " + optionalMedicalStaff.get().getLastName());
+            medicalRecord.setAppointment(optionalAppointment.get());
+            medicalRecord.setPatient(optionalPatient.get());
+            medicalRecordRepository.save(medicalRecord);
+            return 1;
+        }
+    }
+ }
