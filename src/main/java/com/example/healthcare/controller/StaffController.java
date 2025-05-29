@@ -11,6 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.example.healthcare.entity.Billing;
+import com.example.healthcare.model.billing.BillingRequestDTO;
 
 import java.time.LocalDate;
 
@@ -93,4 +97,39 @@ public class StaffController {
     public String newPrescriptionFailed() {
         return "staff/new-prescription-failed";
     }
+
+    @GetMapping("/appointments/new-bill/{patientId}/{appointmentId}")
+    @PreAuthorize("hasRoles('STAFF')")
+    public String newBill(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId, Model model) {
+        model.addAttribute("patientId", patientId);
+        model.addAttribute("appointmentId", appointmentId);
+        model.addAttribute("bill", new BillingRequestDTO());
+        return "staff/new-bill";
+    }
+
+
+    @PostMapping("/appointments/new-bill/{patientId}/{appointmentId}")
+    @PreAuthorize("hasRoles('STAFF')")
+    public String newBill(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId, @ModelAttribute("bill") BillingRequestDTO request) {
+        int success = staffService.createBilling(request, appointmentId, patientId);
+        if (success == 1){  
+            return "redirect:/staff/new-bill-success";
+        } else {
+            return "redirect:/staff/new-bill-failed";
+        }
+
+    }
+    
+    @GetMapping("/new-bill-success")
+    @PreAuthorize("hasRoles('STAFF')")
+    public String newBillSuccess() {
+        return "/staff/new-bill-success";
+    }
+
+    @GetMapping("/new-bill-failed")
+    @PreAuthorize("hasRoles('STAFF')")
+    public String newBillFailed() {
+        return "/staff/new-bill-failed";
+    }
+
 }

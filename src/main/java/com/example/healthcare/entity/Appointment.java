@@ -45,6 +45,5 @@ public class Appointment {
         CONFIRMED,
         COMPLETED,
         CANCELLED,
-        NO_SHOW
     }
 }

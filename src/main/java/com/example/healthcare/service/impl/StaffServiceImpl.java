@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import samples.heathcare.Patient;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,8 +29,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import com.example.healthcare.entity.Prescription;
+import com.example.healthcare.entity.Appointment.AppointmentStatus;
+import com.example.healthcare.entity.Patient;
 import com.example.healthcare.entity.Billing;
 import com.example.healthcare.model.billing.BillingRequestDTO;
 import com.example.healthcare.model.prescription.PrescriptionDTO;
@@ -56,16 +61,24 @@ public class StaffServiceImpl implements StaffService{
     @Override
     public int createPrescription(PrescriptionDTO request, Long patientId, Long appointmentId){
         
-        if(!appointmentRepository.existsById(request.getAppointmentId()) || !patientRepository.existsById(patientId)) {
+        Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
+        Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+        
+        
+        if(!optionalAppointment.isPresent() || !optionalPatient.isPresent()) {
                         throw new NotFoundException("Appointment or User does not exist.");
         } else {
+            //set appointment to completed
+            optionalAppointment.get().setAppointmentStatus(AppointmentStatus.COMPLETED);
+            Appointment savedAppointment = appointmentRepository.save(optionalAppointment.get());
+
             Prescription prescription = new Prescription();
             prescription.setMedication(request.getMedication());
             prescription.setInstructions(request.getInstructions());
             prescription.setPrescribedDate(LocalDate.now());
             prescription.setCreatedAt(LocalDate.now());
-            prescription.setAppointment(appointmentRepository.findById(appointmentId).get());
-            prescription.setPatient(patientRepository.findById(patientId).get());
+            prescription.setAppointment(savedAppointment);
+            prescription.setPatient(optionalPatient.get());
             prescription.setUpdatedAt(null);
             log.info("Saving new prescription...");
             prescriptionRepository.save(prescription);
@@ -74,7 +87,7 @@ public class StaffServiceImpl implements StaffService{
     }
 
     @Override
-    public void createBilling(BillingRequestDTO request, Long appointmentId, Long patientId) {
+    public int createBilling(BillingRequestDTO request, Long appointmentId, Long patientId) {
         if(!appointmentRepository.existsById(appointmentId) || !patientRepository.existsById(patientId)) {
                         throw new NotFoundException("Appointment or User does not exist.");
         } else {
@@ -85,6 +98,7 @@ public class StaffServiceImpl implements StaffService{
             billing.setCreatedAt(LocalDate.now());
             billing.setUpdatedAt(null);
             billingRepository.save(billing);
+            return 1;
         }
     }
 

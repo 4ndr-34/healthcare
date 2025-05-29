@@ -11,5 +11,4 @@ public class BillingRequestDTO {
     private String insuranceClaimId;
     private String paymentMethod;
 
-
 }

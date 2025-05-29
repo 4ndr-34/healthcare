@@ -15,12 +15,13 @@ import java.util.List;
 
 public interface StaffService {
 
-        public int createPrescription(PrescriptionDTO request, Long patientId, Long appointmentId);
+    public int createPrescription(PrescriptionDTO request, Long patientId, Long appointmentId);
 
-        public void createBilling(BillingRequestDTO request, Long appointmentId, Long patientId);
+    public int createBilling(BillingRequestDTO request, Long appointmentId, Long patientId);
 
     void staffLogin(LoginRequestDTO authRequest, HttpServletRequest request, HttpServletResponse response);
 
     List<AppointmentResponseDTO> getAppointmentsForStaff(Authentication authentication, LocalDate appointmentDate);
 
+    
 }
