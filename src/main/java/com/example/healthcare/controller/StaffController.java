@@ -15,6 +15,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.healthcare.entity.Billing;
 import com.example.healthcare.model.billing.BillingRequestDTO;
+import com.example.healthcare.entity.Appointment;
+import com.example.healthcare.model.register.RegisterUserRequestDTO;
+import com.example.healthcare.model.register.SuccessfulRegisterDTO;
+import com.example.healthcare.service.impl.AppointmentServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -73,6 +80,11 @@ public class StaffController {
         model.addAttribute("appointmentId", appointmentId);
         model.addAttribute("prescription", new PrescriptionDTO());
         return "staff/new-prescription";
+    private final AppointmentServiceImpl appointmentService;
+
+    @PostMapping("/create")
+    public SuccessfulRegisterDTO createNewStaffMember(@RequestBody RegisterUserRequestDTO registerUserRequestDTO){
+        return null;
     }
 
     @PostMapping("/appointments/newprescription/{patientId}/{appointmentId}")
@@ -112,14 +124,14 @@ public class StaffController {
     @PreAuthorize("hasRoles('STAFF')")
     public String newBill(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId, @ModelAttribute("bill") BillingRequestDTO request) {
         int success = staffService.createBilling(request, appointmentId, patientId);
-        if (success == 1){  
+        if (success == 1){
             return "redirect:/staff/new-bill-success";
         } else {
             return "redirect:/staff/new-bill-failed";
         }
 
     }
-    
+
     @GetMapping("/new-bill-success")
     @PreAuthorize("hasRoles('STAFF')")
     public String newBillSuccess() {
@@ -130,6 +142,17 @@ public class StaffController {
     @PreAuthorize("hasRoles('STAFF')")
     public String newBillFailed() {
         return "/staff/new-bill-failed";
+    }
+    @PutMapping("/appointments/{appointmentId}/approve")
+    public ResponseEntity<String> approveAppointment(@PathVariable Long appointmentId) {
+        appointmentService.updateAppointmentStatus(appointmentId, Appointment.AppointmentStatus.CONFIRMED);
+        return ResponseEntity.ok("Appointment approved.");
+    }
+
+    @PutMapping("/appointments/{appointmentId}/decline")
+    public ResponseEntity<String> declineAppointment(@PathVariable Long appointmentId) {
+        appointmentService.updateAppointmentStatus(appointmentId, Appointment.AppointmentStatus.CANCELLED);
+        return ResponseEntity.ok("Appointment declined.");
     }
 
 }
