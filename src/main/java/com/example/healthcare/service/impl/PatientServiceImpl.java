@@ -2,17 +2,21 @@ package com.example.healthcare.service.impl;
 
 import com.example.healthcare.entity.Appointment;
 import com.example.healthcare.entity.Appointment;
+import com.example.healthcare.entity.Prescription;
 import com.example.healthcare.helper.exceptions.IDMismatchException;
 import com.example.healthcare.helper.exceptions.NotFoundException;
 import com.example.healthcare.helper.mapper.CustomAppointmentMapper;
+import com.example.healthcare.helper.mapper.CustomPrescriptionMapper;
 import com.example.healthcare.helper.mapper.CustomUserMapper;
 import com.example.healthcare.model.appointment.NewAppointmentRequestDTO;
 import com.example.healthcare.model.login.LoginRequestDTO;
 import com.example.healthcare.model.appointment.AppointmentResponseDTO;
+import com.example.healthcare.model.prescription.PrescriptionDTO;
 import com.example.healthcare.model.register.RegisterUserRequestDTO;
 import com.example.healthcare.model.register.SuccessfulRegisterDTO;
 import com.example.healthcare.repository.AppointmentRepository;
 import com.example.healthcare.repository.PatientRepository;
+import com.example.healthcare.repository.PrescriptionRepository;
 import com.example.healthcare.security.CustomUserDetails;
 import com.example.healthcare.service.PatientService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,6 +49,7 @@ public class PatientServiceImpl implements PatientService {
     private final AuthenticationManager authenticationManager;
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final SecurityContextRepository securityContextRepository;
+    private final PrescriptionRepository prescriptionRepository;
 
     public SuccessfulRegisterDTO registerPatient(RegisterUserRequestDTO registerUserRequestDTO) {
         try {
@@ -101,6 +106,20 @@ public class PatientServiceImpl implements PatientService {
         } else {
             List<Appointment> appointments = appointmentRepository.findAllByPatientId(currentUserId);
             return appointments.stream().map(CustomAppointmentMapper::toAppointmentResponseDTO).toList();
+        }
+    }
+
+    @Override
+    public List<PrescriptionDTO> getPrescriptionsOfPatient(Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Long currentUserId = ((CustomUserDetails) userDetails).getId();
+
+
+        if(!patientRepository.existsById(currentUserId)) {
+            throw new NotFoundException("Patient with ID: " + currentUserId + " does not exist.");
+        } else {
+            List<Prescription> prescriptions = prescriptionRepository.findAllByPatientId(currentUserId);
+            return prescriptions.stream().map(CustomPrescriptionMapper::toPrescriptionDTO).toList();
         }
     }
 

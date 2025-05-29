@@ -31,7 +31,7 @@ import java.util.List;
 import com.example.healthcare.entity.Prescription;
 import com.example.healthcare.entity.Billing;
 import com.example.healthcare.model.billing.BillingRequestDTO;
-import com.example.healthcare.model.prescription.PrescriptionRequestDTO;
+import com.example.healthcare.model.prescription.PrescriptionDTO;
 import com.example.healthcare.repository.BillingRepository;
 import com.example.healthcare.repository.PatientRepository;
 import com.example.healthcare.repository.PrescriptionRepository;
@@ -54,7 +54,7 @@ public class StaffServiceImpl implements StaffService{
     private final StaffRepository staffRepository;
 
     @Override
-    public int createPrescription(PrescriptionRequestDTO request, Long patientId, Long appointmentId){
+    public int createPrescription(PrescriptionDTO request, Long patientId, Long appointmentId){
         
         if(!appointmentRepository.existsById(request.getAppointmentId()) || !patientRepository.existsById(patientId)) {
                         throw new NotFoundException("Appointment or User does not exist.");
@@ -65,6 +65,7 @@ public class StaffServiceImpl implements StaffService{
             prescription.setPrescribedDate(LocalDate.now());
             prescription.setCreatedAt(LocalDate.now());
             prescription.setAppointment(appointmentRepository.findById(appointmentId).get());
+            prescription.setPatient(patientRepository.findById(patientId).get());
             prescription.setUpdatedAt(null);
             log.info("Saving new prescription...");
             prescriptionRepository.save(prescription);

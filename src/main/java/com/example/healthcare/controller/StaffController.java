@@ -1,7 +1,7 @@
 package com.example.healthcare.controller;
 
 import com.example.healthcare.model.login.LoginRequestDTO;
-import com.example.healthcare.model.prescription.PrescriptionRequestDTO;
+import com.example.healthcare.model.prescription.PrescriptionDTO;
 import com.example.healthcare.service.impl.StaffServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -67,13 +67,13 @@ public class StaffController {
     public String newPrescription(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId, Model model) {
         model.addAttribute("patientId", patientId);
         model.addAttribute("appointmentId", appointmentId);
-        model.addAttribute("prescription", new PrescriptionRequestDTO());
+        model.addAttribute("prescription", new PrescriptionDTO());
         return "staff/new-prescription";
     }
 
     @PostMapping("/appointments/newprescription/{patientId}/{appointmentId}")
     @PreAuthorize("hasRoles('DOCTOR')")
-    public String newPrescription(@PathVariable("patientId") Long patientId,@PathVariable("appointmentId") Long appointmentId, @ModelAttribute("request") PrescriptionRequestDTO request) {
+    public String newPrescription(@PathVariable("patientId") Long patientId,@PathVariable("appointmentId") Long appointmentId, @ModelAttribute("request") PrescriptionDTO request) {
         int success = staffService.createPrescription(request, patientId, appointmentId);
         if (success == 1) {
             return "redirect:/staff/prescription/newprescription-success";

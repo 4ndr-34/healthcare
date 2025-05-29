@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Prescriptions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #2e59d9;
+            --text-color: #5a5c69;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .prescription-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .prescription-title {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .prescription-card {
+            background-color: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .prescription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e3e6f0;
+        }
+
+        .prescription-medication {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .prescription-date {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            background-color: #f8f9fc;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .prescription-section {
+            margin-bottom: 1rem;
+        }
+
+        .section-label {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .section-content {
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .prescription-instructions {
+            white-space: pre-line;
+            background-color: #f8f9fc;
+            padding: 0.75rem;
+            border-radius: 0.35rem;
+        }
+
+        .appointment-id {
+            font-size: 0.85rem;
+            color: #858796;
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        .no-prescriptions {
+            text-align: center;
+            color: var(--text-color);
+            padding: 2rem;
+            background-color: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/patient-header :: main-header}"></div>
+<div class="prescription-container">
+    <h1 class="prescription-title">Patient Prescriptions</h1>
+
+    <div th:if="${prescriptions.empty}">
+        <div class="no-prescriptions">
+            No prescriptions found for this patient.
+        </div>
+    </div>
+
+    <div th:each="prescription : ${prescriptions}">
+        <div class="prescription-card">
+            <div class="prescription-header">
+                <h2 class="prescription-medication" th:text="${prescription.medication}">Medication Name</h2>
+                <span class="prescription-date" th:text="${#temporals.format(prescription.prescribedDate, 'MMMM dd, yyyy')}">Prescribed Date</span>
+            </div>
+
+            <div class="prescription-section">
+                <div class="section-label">Instructions:</div>
+                <div class="section-content prescription-instructions" th:text="${prescription.instructions}">
+                    Take one tablet twice daily with food. Do not exceed recommended dosage.
+                </div>
+            </div>
+
+            <div class="appointment-id" th:text="'Appointment ID: ' + ${prescription.appointmentId}">
+                Appointment ID: 12345
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 package com.example.healthcare.service;
 
 import com.example.healthcare.model.billing.BillingRequestDTO;
-import com.example.healthcare.model.prescription.PrescriptionRequestDTO;
+import com.example.healthcare.model.prescription.PrescriptionDTO;
 
 
 import com.example.healthcare.model.appointment.AppointmentResponseDTO;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface StaffService {
 
-        public int createPrescription(PrescriptionRequestDTO request, Long patientId, Long appointmentId);
+        public int createPrescription(PrescriptionDTO request, Long patientId, Long appointmentId);
 
         public void createBilling(BillingRequestDTO request, Long appointmentId, Long patientId);
 

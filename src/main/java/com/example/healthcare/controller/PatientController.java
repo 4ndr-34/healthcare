@@ -75,6 +75,8 @@ public class PatientController {
                 "<br>Authorities: " + auth.getAuthorities();
     }*/
 
+
+    //APPOINTMENTS
     @GetMapping("/appointments")
     @PreAuthorize("hasRole('PATIENT')")
     public String appointmentsPage( Model model, Authentication authentication) {
@@ -96,6 +98,13 @@ public class PatientController {
         return "redirect:/patient/appointments";
     }
 
+
+    @GetMapping("/prescriptions")
+    @PreAuthorize("hasRole('PATIENT')")
+    public String prescriptionsPage(Model model, Authentication authentication) {
+        model.addAttribute("prescriptions", patientService.getPrescriptionsOfPatient(authentication));
+        return "patient/prescriptions";
+    }
 
 
 }

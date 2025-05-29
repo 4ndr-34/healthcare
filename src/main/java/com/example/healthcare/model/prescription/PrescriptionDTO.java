@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 
 @Data
-public class PrescriptionRequestDTO {
+public class PrescriptionDTO {
 
     private String medication;
     private String instructions;
