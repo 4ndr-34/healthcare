@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #2e59d9;
+            --text-color: #5a5c69;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            color: white;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            width: 100%;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e3e6f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d3e2;
+            border-radius: 0.35rem;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.15s ease-in-out;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        input[type="date"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.35rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        .error-message {
+            color: #e74a3b;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: white;
+            border-top: 1px solid #e3e6f0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <h1>Generate Bill</h1>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="card">
+            <div class="card-header">Payment Information</div>
+            <form th:action="@{/staff/appointments/new-bill}" th:object="${bill}" method="post">
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" th:field="*{amount}" step="0.01" min="0" required>
+                    <div class="error-message" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="billingDate">Billing Date</label>
+                    <input type="date" id="billingDate" th:field="*{billingDate}" required>
+                    <div class="error-message" th:if="${#fields.hasErrors('billingDate')}" th:errors="*{billingDate}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="insuranceClaimId">Insurance Claim ID</label>
+                    <input type="text" id="insuranceClaimId" th:field="*{insuranceClaimId}" required>
+                    <div class="error-message" th:if="${#fields.hasErrors('insuranceClaimId')}" th:errors="*{insuranceClaimId}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="paymentMethod">Payment Method</label>
+                    <select id="paymentMethod" th:field="*{paymentMethod}" required>
+                        <option value="">Select a payment method</option>
+                        <option value="CREDIT_CARD">Credit Card</option>
+                        <option value="BANK_TRANSFER">Bank Transfer</option>
+                        <option value="PAYPAL">PayPal</option>
+                        <option value="CASH">Cash</option>
+                    </select>
+                    <div class="error-message" th:if="${#fields.hasErrors('paymentMethod')}" th:errors="*{paymentMethod}"></div>
+                </div>
+
+                <button type="submit" class="btn">Submit Payment</button>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>

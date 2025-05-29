@@ -14,12 +14,7 @@ public class Billing {
     private Long id;
     private Double amount;
     private LocalDate billingDate;
-    private LocalDate dueDate;
-    private BillingStatus status;
-    private Long insuranceClaimId;
-    private Double insuranceCoverage;
-    private Double patientResponsibility;
-    private LocalDate paymentDate;
+    private String insuranceClaimId;//change to String
     private String paymentMethod;
     private LocalDate createdAt;
     private LocalDate updatedAt;
@@ -30,12 +25,5 @@ public class Billing {
     private Patient patient;
 
 
-    public enum BillingStatus {
-        PENDING,
-        PAID,
-        INSURANCE_CLAIM,
-        OVERDUE,
-        WRITE_OFF
-    }
 
 }

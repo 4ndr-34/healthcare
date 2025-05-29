@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -14,8 +15,11 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime appointmentDateAndTime;
+    private LocalDate appointmentDate;
+    private LocalTime appointmentTime;
     private String appointmentNotes;
+    @Enumerated(EnumType.STRING)
+    private MedicalStaff.MedicalDepartment medicalDepartment;
     @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus;
     private LocalDate createdAt;
@@ -41,6 +45,5 @@ public class Appointment {
         CONFIRMED,
         COMPLETED,
         CANCELLED,
-        NO_SHOW
     }
 }

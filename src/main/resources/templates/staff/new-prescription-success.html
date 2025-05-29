@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prescription Saved Successfully</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4e73df;
+      --secondary-color: #f8f9fc;
+      --accent-color: #2e59d9;
+      --text-color: #5a5c69;
+      --success-color: #1cc88a;
+    }
+
+    body {
+      background-color: var(--secondary-color);
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background-color: var(--primary-color);
+      padding: 1rem 2rem;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+      color: white;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .main-content {
+      flex: 1;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    .success-card {
+      background-color: white;
+      border-radius: 0.35rem;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+      padding: 3rem 2rem;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .success-icon {
+      color: var(--success-color);
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .success-title {
+      color: var(--primary-color);
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .success-message {
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .prescription-details {
+      background-color: var(--secondary-color);
+      border-radius: 0.35rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+
+    .detail-row {
+      display: flex;
+      margin-bottom: 0.75rem;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      width: 150px;
+    }
+
+    .btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.35rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease-in-out;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-color);
+    }
+
+    .footer {
+      background-color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      border-top: 1px solid #e3e6f0;
+    }
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="header-container">
+    <h1>Prescription Confirmation</h1>
+  </div>
+</header>
+<div th:replace="~{fragments/patient-header :: main-header}"></div>
+<main class="main-content">
+  <div class="success-card">
+    <!-- Success icon (using HTML entity for checkmark) -->
+    <div class="success-icon">✓</div>
+
+    <h2 class="success-title">Prescription Saved Successfully!</h2>
+
+    <p class="success-message">
+      The prescription has been successfully saved to the system.
+      You can view or print the details below.
+    </p>
+
+  </div>
+</main>
+</body>
+</html>

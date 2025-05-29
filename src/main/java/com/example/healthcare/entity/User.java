@@ -37,6 +37,6 @@ public class User {
     LocalDate lastUpdated;
 
     public enum UserRoles {
-        PATIENT, DOCTOR, NURSE, THERAPIST, TECHNICIAN, ADMIN
+        PATIENT, DOCTOR, STAFF, ADMIN
     }
 }

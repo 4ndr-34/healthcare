@@ -13,10 +13,16 @@ import java.util.Optional;
 @Repository
 public interface StaffRepository extends JpaRepository<MedicalStaff, Long> {
 
+    Optional<MedicalStaff> findById(Long id);
+
+    Optional<MedicalStaff> findByEmail(String email);
+
     Optional<MedicalStaff> findByFirstNameAndLastName(String firstName, String lastName);
 
     @Query(value = "SELECT * FROM staff WHERE department=:departmentName AND first_name=:firstName AND last_name=:lastName LIMIT 1", nativeQuery = true)
     Optional<MedicalStaff> findByDepartmentAndFirstNameAndLastName(String departmentName, String firstName, String lastName);
 
+    @Query(value = "SELECT * FROM staff WHERE department = :departmentName LIMIT 1", nativeQuery = true)
+    Optional<MedicalStaff> findByDepartment(String departmentName);
 
 }
