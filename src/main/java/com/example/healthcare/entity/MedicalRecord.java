@@ -15,8 +15,6 @@ public class MedicalRecord {
     private String diagnosis;
     private String treatmentPlan;
     private String notes;
-    private String labResults;//remove
-    private LocalDate followUpDate;//remove
     private LocalDate createdAt;
     private LocalDate lastUpdated;
     private String medicalStaff;

@@ -22,4 +22,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<Appointment> findAllByAppointmentDateAndMedicalStaffId(LocalDate appointmentDate, Long id);
 
+    List<Appointment> findAllByAppointmentDate(LocalDate appointmentDate);
+
+    List<Appointment> findAllByAppointmentDateAndAppointmentTimeBeforeAndAppointmentStatus(LocalDate appointmentDate, LocalTime time, Appointment.AppointmentStatus status);
 }

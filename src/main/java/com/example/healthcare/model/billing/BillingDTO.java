@@ -4,11 +4,14 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class BillingRequestDTO {
+public class BillingDTO {
 
     private Double amount;
     private LocalDate billingDate;
     private String insuranceClaimId;
     private String paymentMethod;
+    private String patientName;
+    private LocalDate appointmentDate;
+    private Long appointmentId;
 
 }

@@ -1,6 +1,8 @@
 package com.example.healthcare.controller;
 
+import com.example.healthcare.entity.MedicalRecord;
 import com.example.healthcare.model.login.LoginRequestDTO;
+import com.example.healthcare.model.medicalRecord.MedicalRecordRequestDTO;
 import com.example.healthcare.model.prescription.PrescriptionDTO;
 import com.example.healthcare.service.impl.StaffServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +16,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 
 
-import com.example.healthcare.model.billing.BillingRequestDTO;
+import com.example.healthcare.model.billing.BillingDTO;
 import com.example.healthcare.entity.Appointment;
-import com.example.healthcare.model.register.RegisterUserRequestDTO;
-import com.example.healthcare.model.register.SuccessfulRegisterDTO;
 import com.example.healthcare.service.impl.AppointmentServiceImpl;
 
 import org.springframework.http.ResponseEntity;
@@ -108,26 +108,27 @@ public class StaffController {
         return "staff/new-prescription-failed";
     }
 
+
+    //BILLS
     @GetMapping("/appointments/new-bill/{patientId}/{appointmentId}")
     @PreAuthorize("hasRoles('STAFF')")
     public String newBill(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId, Model model) {
         model.addAttribute("patientId", patientId);
         model.addAttribute("appointmentId", appointmentId);
-        model.addAttribute("bill", new BillingRequestDTO());
+        model.addAttribute("bill", new BillingDTO());
         return "staff/new-bill";
     }
 
 
     @PostMapping("/appointments/new-bill/{patientId}/{appointmentId}")
     @PreAuthorize("hasRoles('STAFF')")
-    public String newBill(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId, @ModelAttribute("bill") BillingRequestDTO request) {
+    public String newBill(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId, @ModelAttribute("bill") BillingDTO request) {
         int success = staffService.createBilling(request, appointmentId, patientId);
         if (success == 1){
             return "redirect:/staff/new-bill-success";
         } else {
             return "redirect:/staff/new-bill-failed";
         }
-
     }
 
     @GetMapping("/new-bill-success")
@@ -141,16 +142,54 @@ public class StaffController {
     public String newBillFailed() {
         return "/staff/new-bill-failed";
     }
-    @PutMapping("/appointments/{appointmentId}/approve")
-    public ResponseEntity<String> approveAppointment(@PathVariable Long appointmentId) {
-        appointmentService.updateAppointmentStatus(appointmentId, Appointment.AppointmentStatus.CONFIRMED);
-        return ResponseEntity.ok("Appointment approved.");
+
+
+    //MEDICAL RECORDS
+    @GetMapping("/appointments/new-medical-record/{patientId}/{appointmentId}")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public String newMedicalRecord(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId,Model model) {
+        model.addAttribute("patientId", patientId);
+        model.addAttribute("appointmentId", appointmentId);
+        model.addAttribute("medicalRecord", new MedicalRecordRequestDTO());
+        return "/staff/new-medical-record";
     }
 
-    @PutMapping("/appointments/{appointmentId}/decline")
-    public ResponseEntity<String> declineAppointment(@PathVariable Long appointmentId) {
+    @PostMapping("/appointments/new-medical-record/{patientId}/{appointmentId}")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public String newMedicalRecord(@PathVariable("patientId") Long patientId, @PathVariable("appointmentId") Long appointmentId, @ModelAttribute("medicalRecord") MedicalRecordRequestDTO request, Authentication authentication) {
+        int success = staffService.createMedicalRecord(request, appointmentId, patientId, authentication);
+        if (success == 1) {
+            return "redirect:/staff/new-medical-record-success";
+        } else {
+            return "redirect:/staff/new-medical-record-failed";
+        }
+    }
+
+    @GetMapping("/new-medical-record-success")
+    @PreAuthorize("hasRoles('DOCTOR')")
+    public String newMedicalRecordSuccess() {
+        return "/staff/new-medical-record-success";
+    }
+
+    @GetMapping("/new-medical-record-failed")
+    @PreAuthorize("hasRoles('DOCTOR')")
+    public String newMedicalRecordFailed() {
+        return "/staff/new-medical-record-failed";
+    }
+
+
+
+
+    @PostMapping("/appointments/approve/{appointmentId}")
+    public String approveAppointment(@PathVariable("appointmentId") Long appointmentId) {
+        appointmentService.updateAppointmentStatus(appointmentId, Appointment.AppointmentStatus.CONFIRMED);
+        return "redirect:/staff/appointments";
+    }
+
+    @PostMapping("/appointments/decline/{appointmentId}")
+    public String declineAppointment(@PathVariable("appointmentId") Long appointmentId) {
         appointmentService.updateAppointmentStatus(appointmentId, Appointment.AppointmentStatus.CANCELLED);
-        return ResponseEntity.ok("Appointment declined.");
+        return "redirect:/staff/appointments";
     }
 
 }

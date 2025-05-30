@@ -27,6 +27,9 @@ public class CustomAppointmentMapper {
         response.setAppointmentStatus(appointment.getAppointmentStatus().name());
         response.setCreatedAt(appointment.getCreatedAt().atStartOfDay());
         response.setPatientId(appointment.getPatient().getId());
+        if(appointment.getMedicalRecord() != null) {
+            response.setMedicalRecordId(appointment.getMedicalRecord().getId());
+        }
         return response;
     }
 

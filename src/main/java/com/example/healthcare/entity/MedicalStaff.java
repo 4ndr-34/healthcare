@@ -37,7 +37,8 @@ public class MedicalStaff extends User{
         DERMATOLOGY,
         ORTHOPEDICS,
         RADIOLOGY,
-        NEUROLOGY
+        NEUROLOGY,
+        STAFF
     }
 }
 

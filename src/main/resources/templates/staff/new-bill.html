@@ -143,7 +143,7 @@
     <main class="main-content">
         <div class="card">
             <div class="card-header">Payment Information</div>
-            <form th:action="@{/staff/appointments/new-bill}" th:object="${bill}" method="post">
+            <form th:object="${bill}" method="post">
                 <div class="form-group">
                     <label for="amount">Amount</label>
                     <input type="number" id="amount" th:field="*{amount}" step="0.01" min="0" required>

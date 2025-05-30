@@ -1,29 +1,17 @@
 package com.example.healthcare.controller;
 
-import com.example.healthcare.model.appointment.AppointmentResponseDTO;
 import com.example.healthcare.model.appointment.NewAppointmentRequestDTO;
-import com.example.healthcare.model.appointment.NewAppointmentResponseDTO;
 import com.example.healthcare.model.login.LoginRequestDTO;
 import com.example.healthcare.model.register.RegisterUserRequestDTO;
-import com.example.healthcare.model.register.SuccessfulRegisterDTO;
 import com.example.healthcare.service.impl.AppointmentServiceImpl;
 import com.example.healthcare.service.impl.PatientServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.security.Principal;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/patient")
@@ -36,7 +24,7 @@ public class PatientController {
     @GetMapping("/login-register")
     public String registerPatientHandler(Model model) {
         model.addAttribute("request", new RegisterUserRequestDTO());
-        return "login-register/login-register";
+        return "patient/login-register";
     }
 
 
@@ -60,7 +48,7 @@ public class PatientController {
 
     @GetMapping("/successful-registration")
     public String successfulRegistrationPage() {
-        return "login-register/successful-registration";
+        return "patient/successful-registration";
     }
 
 /*    @GetMapping("/test-security-context")
@@ -80,7 +68,7 @@ public class PatientController {
     @GetMapping("/appointments")
     @PreAuthorize("hasRole('PATIENT')")
     public String appointmentsPage( Model model, Authentication authentication) {
-        model.addAttribute("userAppointments", patientService.getAppointmentsOfPatient(authentication));
+        model.addAttribute("userAppointments", patientService.getPatientAppointments(authentication));
         return "patient/appointments";
     }
 
@@ -102,9 +90,22 @@ public class PatientController {
     @GetMapping("/prescriptions")
     @PreAuthorize("hasRole('PATIENT')")
     public String prescriptionsPage(Model model, Authentication authentication) {
-        model.addAttribute("prescriptions", patientService.getPrescriptionsOfPatient(authentication));
+        model.addAttribute("prescriptions", patientService.getPatientPrescriptions(authentication));
         return "patient/prescriptions";
     }
 
+    @GetMapping("/bills")
+    @PreAuthorize("hasRole('PATIENT')")
+    public String patientBills(Model model, Authentication authentication) {
+        model.addAttribute("bills", patientService.getPatientBills(authentication));
+        return "patient/bills";
+    }
+
+    @GetMapping("/medical-records")
+    @PreAuthorize("hasRole('PATIENT')")
+    public String patientMedicalRecords(Model model, Authentication authentication) {
+        model.addAttribute("medicalRecords", patientService.getPatientMedicalRecords(authentication));
+        return "patient/medical-records";
+    }
 
 }
