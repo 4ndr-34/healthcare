@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prescription Saved Successfully</title>
+  <title>Prescription Save Failed</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/styles.css}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,7 +13,8 @@
       --secondary-color: #f8f9fc;
       --accent-color: #2e59d9;
       --text-color: #5a5c69;
-      --success-color: #1cc88a;
+      --error-color: #e74a3b;
+      --warning-color: #f6c23e;
     }
 
     body {
@@ -52,7 +53,7 @@
       text-align: center;
     }
 
-    .success-card {
+    .error-card {
       background-color: white;
       border-radius: 0.35rem;
       box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
@@ -63,23 +64,32 @@
       margin-right: auto;
     }
 
-    .success-icon {
-      color: var(--success-color);
+    .error-icon {
+      color: var(--error-color);
       font-size: 4rem;
       margin-bottom: 1.5rem;
     }
 
-    .success-title {
-      color: var(--primary-color);
+    .error-title {
+      color: var(--error-color);
       font-size: 1.75rem;
       font-weight: 600;
       margin-bottom: 1rem;
     }
 
-    .success-message {
+    .error-message {
       margin-bottom: 2rem;
       font-size: 1.1rem;
       line-height: 1.6;
+    }
+
+    .error-details {
+      background-color: #fdf2f2;
+      border-left: 4px solid var(--error-color);
+      border-radius: 0.35rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
     }
 
     .prescription-details {
@@ -114,36 +124,40 @@
       display: inline-block;
     }
 
+    .btn-warning {
+      background-color: var(--warning-color);
+    }
+
+    .btn-error {
+      background-color: var(--error-color);
+    }
+
     .btn:hover {
       background-color: var(--accent-color);
     }
 
-    .footer {
-      background-color: white;
-      padding: 1rem 2rem;
-      text-align: center;
-      border-top: 1px solid #e3e6f0;
-    }
   </style>
 </head>
 <body>
 <div th:replace="~{fragments/patient-header :: main-header}"></div>
   <div class="header-container">
-    <h1>Prescription Confirmation</h1>
+    <h1>Medical Record Error</h1>
   </div>
+
 <main class="main-content">
-  <div class="success-card">
-    <!-- Success icon (using HTML entity for checkmark) -->
-    <div class="success-icon">✓</div>
+  <div class="error-card">
+    <!-- Error icon (using HTML entity for X mark) -->
+    <div class="error-icon">✗</div>
 
-    <h2 class="success-title">Prescription Saved Successfully!</h2>
+    <h2 class="error-title">Failed to Save Medical Record</h2>
 
-    <p class="success-message">
-      The prescription has been successfully saved to the system.
-      You can view or print the details below.
+    <p class="error-message">
+      We encountered an error while trying to save this medical record.
+      Please review the details below and try again.
     </p>
 
   </div>
 </main>
+
 </body>
 </html>

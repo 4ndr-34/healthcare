@@ -1,6 +1,6 @@
 package com.example.healthcare.service;
 
-import com.example.healthcare.model.billing.BillingRequestDTO;
+import com.example.healthcare.model.billing.BillingDTO;
 import com.example.healthcare.model.prescription.PrescriptionDTO;
 
 
@@ -19,7 +19,7 @@ public interface StaffService {
 
     public int createPrescription(PrescriptionDTO request, Long patientId, Long appointmentId);
 
-    public int createBilling(BillingRequestDTO request, Long appointmentId, Long patientId);
+    public int createBilling(BillingDTO request, Long appointmentId, Long patientId);
 
     void staffLogin(LoginRequestDTO authRequest, HttpServletRequest request, HttpServletResponse response);
 

@@ -24,6 +24,9 @@ public class Billing {
     @JoinColumn(name="patient_id")
     private Patient patient;
 
+    @OneToOne
+    @JoinColumn(name="appointment_id")
+    private Appointment appointment;
 
 
 }

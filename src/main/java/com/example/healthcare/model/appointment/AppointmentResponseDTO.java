@@ -15,4 +15,5 @@ public class AppointmentResponseDTO {
     private String appointmentStatus;
     private LocalDateTime createdAt;
     private Long patientId;
+    private Long medicalRecordId;
 }

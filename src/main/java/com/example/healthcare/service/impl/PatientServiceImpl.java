@@ -1,27 +1,23 @@
 package com.example.healthcare.service.impl;
 
 import com.example.healthcare.entity.Appointment;
-import com.example.healthcare.entity.Appointment;
+import com.example.healthcare.entity.Billing;
+import com.example.healthcare.entity.MedicalRecord;
 import com.example.healthcare.entity.Prescription;
-import com.example.healthcare.helper.exceptions.IDMismatchException;
 import com.example.healthcare.helper.exceptions.NotFoundException;
-import com.example.healthcare.helper.mapper.CustomAppointmentMapper;
-import com.example.healthcare.helper.mapper.CustomPrescriptionMapper;
-import com.example.healthcare.helper.mapper.CustomUserMapper;
-import com.example.healthcare.model.appointment.NewAppointmentRequestDTO;
+import com.example.healthcare.helper.mapper.*;
+import com.example.healthcare.model.billing.BillingDTO;
 import com.example.healthcare.model.login.LoginRequestDTO;
 import com.example.healthcare.model.appointment.AppointmentResponseDTO;
+import com.example.healthcare.model.medicalRecord.MedicalRecordResponseDTO;
 import com.example.healthcare.model.prescription.PrescriptionDTO;
 import com.example.healthcare.model.register.RegisterUserRequestDTO;
 import com.example.healthcare.model.register.SuccessfulRegisterDTO;
-import com.example.healthcare.repository.AppointmentRepository;
-import com.example.healthcare.repository.PatientRepository;
-import com.example.healthcare.repository.PrescriptionRepository;
+import com.example.healthcare.repository.*;
 import com.example.healthcare.security.CustomUserDetails;
 import com.example.healthcare.service.PatientService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.example.healthcare.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,8 +33,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import java.security.Principal;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -50,6 +44,8 @@ public class PatientServiceImpl implements PatientService {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final SecurityContextRepository securityContextRepository;
     private final PrescriptionRepository prescriptionRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
+    private final BillingRepository billingRepository;
 
     public SuccessfulRegisterDTO registerPatient(RegisterUserRequestDTO registerUserRequestDTO) {
         try {
@@ -95,7 +91,7 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public List<AppointmentResponseDTO> getAppointmentsOfPatient(Authentication authentication) {
+    public List<AppointmentResponseDTO> getPatientAppointments(Authentication authentication) {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Long currentUserId = ((CustomUserDetails) userDetails).getId();
@@ -110,7 +106,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PrescriptionDTO> getPrescriptionsOfPatient(Authentication authentication) {
+    public List<PrescriptionDTO> getPatientPrescriptions(Authentication authentication) {
+
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Long currentUserId = ((CustomUserDetails) userDetails).getId();
 
@@ -121,6 +118,35 @@ public class PatientServiceImpl implements PatientService {
             List<Prescription> prescriptions = prescriptionRepository.findAllByPatientId(currentUserId);
             return prescriptions.stream().map(CustomPrescriptionMapper::toPrescriptionDTO).toList();
         }
+    }
+
+    @Override
+    public List<BillingDTO> getPatientBills(Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Long currentUserId = ((CustomUserDetails) userDetails).getId();
+
+        if(!patientRepository.existsById(currentUserId)) {
+            throw new NotFoundException("Patient with ID: " + currentUserId + " does not exist.");
+        } else {
+            List<Billing> bills = billingRepository.findAllByPatientId(currentUserId);
+            return bills.stream().map(CustomBillingMapper::toBillingDTO).toList();
+        }
+    }
+
+    @Override
+    public List<MedicalRecordResponseDTO> getPatientMedicalRecords(Authentication authentication) {
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Long currentUserId = ((CustomUserDetails) userDetails).getId();
+
+
+        if(!patientRepository.existsById(currentUserId)) {
+            throw new NotFoundException("Patient with ID: " + currentUserId + " does not exist.");
+        } else {
+            List<MedicalRecord> medicalRecords = medicalRecordRepository.getAllByPatientId(currentUserId);
+            return medicalRecords.stream().map(CustomMedicalRecordMapper::toMedicalRecordResponseDTO).toList();
+        }
+
     }
 
 

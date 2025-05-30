@@ -136,29 +136,14 @@
             background-color: var(--accent-color);
         }
 
-        .btn-warning:hover {
-            background-color: #dda20a;
-        }
-
-        .btn-error:hover {
-            background-color: #c03529;
-        }
-
-        .footer {
-            background-color: white;
-            padding: 1rem 2rem;
-            text-align: center;
-            border-top: 1px solid #e3e6f0;
-        }
     </style>
 </head>
 <body>
-<header class="header">
+<div th:replace="~{fragments/patient-header :: main-header}"></div>
     <div class="header-container">
         <h1>Prescription Error</h1>
     </div>
-</header>
-<div th:replace="~{fragments/patient-header :: main-header}"></div>
+
 <main class="main-content">
     <div class="error-card">
         <!-- Error icon (using HTML entity for X mark) -->
