@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,6 +43,8 @@ import com.example.healthcare.repository.PrescriptionRepository;
 
 
 import java.lang.Long;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -143,7 +146,31 @@ public class StaffServiceImpl implements StaffService{
         }
     }
 
-    @Override
+
+
+
+    @Async("taskExecutor")
+    public CompletableFuture<Optional<Appointment>> getAppointmentAsync(Long appointmentId) {
+        return CompletableFuture.completedFuture(appointmentRepository.findById(appointmentId));
+    }
+
+    @Async("taskExecutor")
+    public CompletableFuture<Optional<Patient>> getPatientAsync(Long patientId) {
+        return CompletableFuture.completedFuture(patientRepository.findById(patientId));
+    }
+
+    @Async("taskExecutor")
+    public CompletableFuture<Optional<MedicalStaff>> getStaffAsync(Long staffId) {
+        return CompletableFuture.completedFuture(staffRepository.findById(staffId));
+    }
+
+    @Async("taskExecutor")
+    public void saveMedicalRecordAsync(MedicalRecord medicalRecord) {
+        medicalRecordRepository.save(medicalRecord);
+    }
+
+
+/*    @Override
     public int createMedicalRecord(MedicalRecordRequestDTO request, Long appointmentId, Long patientId, Authentication authentication) {
 
         Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
@@ -166,5 +193,44 @@ public class StaffServiceImpl implements StaffService{
             medicalRecordRepository.save(medicalRecord);
             return 1;
         }
+    }*/
+
+    @Override
+    public int createMedicalRecord(MedicalRecordRequestDTO request, Long appointmentId, Long patientId, Authentication authentication) {
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Long currentUserId = ((CustomUserDetails) userDetails).getId();
+
+        try {
+            CompletableFuture<Optional<Appointment>> appointmentFuture = getAppointmentAsync(appointmentId);
+            CompletableFuture<Optional<Patient>> patientFuture = getPatientAsync(patientId);
+            CompletableFuture<Optional<MedicalStaff>> staffFuture = getStaffAsync(currentUserId);
+
+            CompletableFuture.allOf(appointmentFuture, patientFuture, staffFuture).join();
+
+            Optional<Appointment> optionalAppointment = appointmentFuture.get();
+            Optional<Patient> optionalPatient = patientFuture.get();
+            Optional<MedicalStaff> optionalMedicalStaff = staffFuture.get();
+
+            if(!optionalAppointment.isPresent() || !optionalPatient.isPresent() || !optionalMedicalStaff.isPresent()) {
+                throw new NotFoundException("Appointment or User does not exist.");
+            }
+
+            MedicalRecord medicalRecord = new MedicalRecord();
+            medicalRecord.setDiagnosis(request.getDiagnosis());
+            medicalRecord.setTreatmentPlan(request.getTreatmentPlan());
+            medicalRecord.setNotes(request.getNotes());
+            medicalRecord.setMedicalStaff(optionalMedicalStaff.get().getFirstName() + " " + optionalMedicalStaff.get().getLastName());
+            medicalRecord.setAppointment(optionalAppointment.get());
+            medicalRecord.setPatient(optionalPatient.get());
+
+            saveMedicalRecordAsync(medicalRecord);
+
+            return 1;
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Error processing medical record creation", e);
+        }
     }
- }
+}
+

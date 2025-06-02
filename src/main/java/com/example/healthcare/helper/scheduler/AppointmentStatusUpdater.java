@@ -16,7 +16,7 @@ public class AppointmentStatusUpdater {
 
     private final AppointmentRepository appointmentRepository;
 
-    @Scheduled(cron = "0 */30 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     @Transactional
     public void updateConfirmedAppointments() {
         LocalDate today = LocalDate.now();

@@ -4,6 +4,7 @@ import com.example.healthcare.entity.MedicalRecord;
 import com.example.healthcare.model.login.LoginRequestDTO;
 import com.example.healthcare.model.medicalRecord.MedicalRecordRequestDTO;
 import com.example.healthcare.model.prescription.PrescriptionDTO;
+import com.example.healthcare.service.StaffService;
 import com.example.healthcare.service.impl.StaffServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +31,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class StaffController {
 
-    private final StaffServiceImpl staffService;
+    private final StaffService staffService;
     private final AppointmentServiceImpl appointmentService;
 
     @GetMapping("/login")
